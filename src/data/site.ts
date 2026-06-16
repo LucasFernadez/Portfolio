@@ -13,13 +13,46 @@ export const site = {
   // Propuesta de valor / diferencial (eyebrow sobre el título)
   valueProp: "Convierto ideas en productos digitales que escalan",
   tagline:
-    "Construyo aplicaciones a medida, escalables y de alto rendimiento. Desarrollo personalizado y mantenimiento web con tecnologías modernas y código limpio.",
+    "Construyo aplicaciones a medida, escalables y de alto rendimiento. Desarrollo personalizado, mantenimiento web y posicionamiento SEO con tecnologías modernas y código limpio.",
   email: "Lucasfadev@gmail.com",
+  // Palabras clave para SEO (meta keywords y referencia de contenido)
+  keywords: [
+    "desarrollador web full-stack",
+    "desarrollo web a medida",
+    "posicionamiento SEO",
+    "mantenimiento web",
+    "aplicaciones web escalables",
+    "Lucas Fernandez",
+  ],
   social: {
     github: "https://github.com/LucasFernadez",
     linkedin: "https://www.linkedin.com/in/lucas-fernandez-adalid-029a56362/",
   },
 };
+
+// Servicios que ofreces. Se muestran como tarjetas y alimentan el SEO.
+export type Service = {
+  title: string;
+  description: string;
+};
+
+export const services: Service[] = [
+  {
+    title: "Desarrollo web a medida",
+    description:
+      "Aplicaciones y sitios full-stack rápidos, escalables y mantenibles, construidos con tecnologías modernas y código limpio.",
+  },
+  {
+    title: "Posicionamiento SEO",
+    description:
+      "Optimización técnica y de contenido para que tu web posicione en Google: rendimiento, datos estructurados, sitemap y buenas prácticas.",
+  },
+  {
+    title: "Mantenimiento web",
+    description:
+      "Soporte continuo, mejoras de rendimiento, actualizaciones y nuevas funcionalidades para mantener tu producto al día.",
+  },
+];
 
 // Proyectos: rellénalos más adelante. Deja la lista vacía y se muestra un placeholder.
 export type Project = {
@@ -48,4 +81,5 @@ export const technologies = [
   "Tailwind",
   "MongoDB",
   "Astro",
+  "SEO",
 ];

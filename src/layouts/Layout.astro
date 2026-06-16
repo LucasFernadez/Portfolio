@@ -15,6 +15,30 @@ const {
 // URL canónica de la página actual, derivada del dominio configurado en site.ts
 const canonicalURL = new URL(Astro.url.pathname, site.url).href;
 const ogImage = new URL("/og.png", site.url).href;
+
+// Datos estructurados (JSON-LD) para que Google entienda quién eres y qué ofreces.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  jobTitle: site.role,
+  email: `mailto:${site.email}`,
+  description: site.tagline,
+  sameAs: [site.social.github, site.social.linkedin],
+  knowsAbout: site.keywords,
+  makesOffer: site.url
+    ? [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Desarrollo web y posicionamiento SEO",
+          },
+        },
+      ]
+    : undefined,
+};
 ---
 
 <!doctype html>
@@ -27,7 +51,9 @@ const ogImage = new URL("/og.png", site.url).href;
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={site.keywords.join(", ")} />
     <meta name="author" content={site.name} />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / redes sociales -->
@@ -41,6 +67,13 @@ const ogImage = new URL("/og.png", site.url).href;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+
+    <!-- Datos estructurados (SEO) -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+    />
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
