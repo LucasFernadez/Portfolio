@@ -1,0 +1,8 @@
+# Configuración de Cloudflare Workers.
+# El portfolio es un sitio Astro 100% estático: Wrangler solo sirve
+# los archivos generados en ./dist como assets. Sin KV ni otros bindings.
+name = "portfolio"
+compatibility_date = "2026-06-16"
+
+[assets]
+directory = "./dist"
