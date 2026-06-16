@@ -40,7 +40,12 @@ export const services: Service[] = [
   {
     title: "Desarrollo web a medida",
     description:
-      "Aplicaciones y sitios full-stack rápidos, escalables y mantenibles, construidos con tecnologías modernas y código limpio.",
+      "Sitios y plataformas full-stack rápidos, escalables y mantenibles, construidos con tecnologías modernas y código limpio.",
+  },
+  {
+    title: "Aplicaciones personalizadas",
+    description:
+      "Apps a medida adaptadas a tu negocio: desde herramientas internas hasta productos completos, diseñadas en torno a tus necesidades.",
   },
   {
     title: "Posicionamiento SEO",
