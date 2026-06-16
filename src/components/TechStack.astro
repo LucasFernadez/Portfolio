@@ -1,0 +1,31 @@
+---
+import { technologies } from "../data/site";
+---
+
+<section id="tecnologias" class="border-t border-border/60">
+  <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+    <div class="mb-12">
+      <p class="label-caps mb-2 text-xs font-medium text-muted">Stack</p>
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Tecnologías</h2>
+      <p class="mt-3 max-w-lg text-sm text-secondary">
+        Herramientas con las que construyo soluciones modernas, escalables y
+        mantenibles.
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+    >
+      {
+        technologies.map((tech) => (
+          <div class="flex items-center gap-3 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent/60">
+            <span class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface-2 font-mono text-sm font-semibold text-accent">
+              {tech.slice(0, 2)}
+            </span>
+            <span class="text-sm font-medium">{tech}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

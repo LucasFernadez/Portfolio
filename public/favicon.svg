@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Fondo redondeado (Neutral) -->
+  <rect width="32" height="32" rx="7" fill="#0F1713"/>
+  <!-- Cuerpo de la hoja: punta arriba-derecha, base abajo-izquierda (Primary) -->
+  <path d="M25 7C25 7 23.5 18 16.5 23.5C12.5 26.6 7.5 25.8 7.5 25.8C7.5 25.8 6.7 20.8 9.8 16.8C15.3 9.8 25 7 25 7Z" fill="#22C55E"/>
+  <!-- Vena central = trazo de la "L" (recorre la hoja hasta la base) -->
+  <path d="M24 8L9.5 25" stroke="#0F1713" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  <!-- Nervadura superior = brazo de la "F" -->
+  <path d="M18.2 13.8L23 11.2" stroke="#0F1713" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+  <!-- Nervadura media = segundo brazo de la "F" -->
+  <path d="M14.6 17.6L19 15.4" stroke="#0F1713" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+  <!-- Base de la "L" (pie de la vena, en verde claro Tertiary) -->
+  <path d="M9.5 25L13.5 25" stroke="#8BA888" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+</svg>
