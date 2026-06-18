@@ -15,6 +15,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^6.4.7",
+    "simple-icons": "^16.23.0",
     "tailwindcss": "^4.3.1"
   }
 }

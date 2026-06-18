@@ -65,16 +65,63 @@ export type Project = {
   description: string;
   tags: string[];
   link?: string;
+  // Ruta a la captura del proyecto (en /public). Si falta, se muestra un placeholder.
+  image?: string;
+  // Texto alternativo de la imagen (accesibilidad).
+  imageAlt?: string;
 };
 
 export const projects: Project[] = [
-  // Ejemplo (borra o reemplaza con los tuyos reales):
-  // {
-  //   title: "Plataforma SaaS",
-  //   description: "Aplicación web robusta para gestión de inventarios y análisis predictivo en tiempo real.",
-  //   tags: ["React", "TypeScript", "Tailwind"],
-  //   link: "https://...",
-  // },
+  {
+    title: "Ribera9Trainer",
+    description:
+      "Web profesional para un entrenador online de fuerza especializado en powerlifting: presentación de servicios, metodología, atletas, blog y captación de clientes. Sitio rápido y optimizado para SEO.",
+    tags: ["Astro", "Tailwind", "TypeScript", "SEO"],
+    link: "https://www.ribera9trainer.com",
+    image: "/proyectos/ribera9trainer.webp",
+    imageAlt: "Página de inicio de Ribera9Trainer, web de entrenamiento de powerlifting",
+  },
+  {
+    title: "Mantenimiento web WordPress",
+    description:
+      "Gestión y mantenimiento continuo de un sitio WordPress: actualizaciones de núcleo, plugins y temas, copias de seguridad, mejoras de rendimiento y seguridad, resolución de incidencias y nuevas funcionalidades a demanda.",
+    tags: ["WordPress", "PHP", "Mantenimiento", "SEO"],
+    link: "https://theapartment.es",
+    image: "/proyectos/theapartment.webp",
+    imageAlt: "Web de The Apartment, sitio WordPress en mantenimiento",
+  },
+  {
+    title: "Entrenador Voleibol",
+    description:
+      "Aplicación web (PWA instalable y offline) para entrenadores de voleibol: marcador en tiempo real, gestión de sets, estadísticas individuales por jugadora y resumen completo del partido. Datos persistentes en el dispositivo.",
+    tags: ["PWA", "JavaScript", "Service Worker", "LocalStorage"],
+    image: "/proyectos/volei.webp",
+    imageAlt: "Pantalla de la app Entrenador Voleibol para registrar jugadoras y estadísticas",
+  },
+  {
+    title: "Arise",
+    description:
+      "Aplicación web progresiva (PWA) de productividad gamificada: convierte tus tareas diarias en una experiencia de juego con XP, niveles y recompensas. Instalable, funciona offline y guarda tus datos de forma privada.",
+    tags: ["PWA", "JavaScript", "Firebase", "Service Worker"],
+    image: "/proyectos/arise.webp",
+    imageAlt: "Pantalla de acceso de Arise, app de productividad gamificada",
+  },
+  {
+    title: "Quedar",
+    description:
+      "Aplicación para coordinar quedadas entre amigos: cada persona marca sus días disponibles en un calendario compartido y la app encuentra las fechas en las que coincide todo el grupo.",
+    tags: ["Node.js", "Express", "MongoDB", "JavaScript"],
+    image: "/proyectos/quedar.webp",
+    imageAlt: "Calendario compartido de la app Quedar para coordinar fechas",
+  },
+  {
+    title: "Control de Horas",
+    description:
+      "Aplicación web para contabilizar las horas de trabajo de los empleados de una tienda: alta de trabajadores, registro de jornadas con entrada y salida, y cálculo automático de horas trabajadas.",
+    tags: ["PWA", "JavaScript", "Service Worker", "LocalStorage"],
+    image: "/proyectos/control-horas.webp",
+    imageAlt: "Panel de Control de Horas de Trabajo para gestionar empleados y jornadas",
+  },
 ];
 
 export const technologies = [

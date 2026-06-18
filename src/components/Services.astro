@@ -4,7 +4,7 @@ import { services } from "../data/site";
 
 <section id="servicios" class="border-t border-border/60">
   <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-    <div class="mb-12">
+    <div class="mb-12" data-reveal>
       <p class="label-caps mb-2 text-xs font-medium text-muted">Servicios</p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
         Cómo puedo ayudarte
@@ -15,10 +15,14 @@ import { services } from "../data/site";
       </p>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
       {
         services.map((service) => (
-          <article class="rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/60">
+          <article
+            data-reveal
+            data-spotlight
+            class="rounded-xl border border-border bg-surface p-6 transition-colors hover:-translate-y-1 hover:border-accent/60"
+          >
             <h3 class="text-lg font-semibold text-accent">{service.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-secondary">
               {service.description}

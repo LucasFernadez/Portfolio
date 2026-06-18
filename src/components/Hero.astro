@@ -3,9 +3,9 @@ import { site } from "../data/site";
 ---
 
 <section class="relative overflow-hidden">
-  <!-- Resplandor de fondo -->
+  <!-- Resplandor de fondo (con deriva animada) -->
   <div
-    class="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-accent/[0.10] blur-[120px]"
+    class="hero-glow pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-accent/[0.10] blur-[120px]"
   >
   </div>
 
@@ -22,12 +22,19 @@ import { site } from "../data/site";
       </p>
 
       <h1
-        class="text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
+        class="hero-title text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
       >
         {
-          site.headline.map((word) => (
-            <span class={site.highlight.includes(word) ? "text-accent" : ""}>
-              {word}{" "}
+          site.headline.map((word, i) => (
+            <span
+              class:list={[
+                "hero-word",
+                site.highlight.includes(word) && "text-accent",
+              ]}
+              style={`--word-delay: ${i * 110}ms`}
+            >
+              {word}
+              {" "}
             </span>
           ))
         }
@@ -68,9 +75,71 @@ import { site } from "../data/site";
           alt={site.name}
           width="1008"
           height="892"
-          class="h-64 w-auto select-none sm:h-80 lg:h-[26rem]"
+          class="hero-portrait h-64 w-auto select-none sm:h-80 lg:h-[26rem]"
         />
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* Entrada del título palabra por palabra */
+  .hero-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    animation: hero-word-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--word-delay, 0ms);
+  }
+
+  @keyframes hero-word-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Retrato con flotación suave continua */
+  .hero-portrait {
+    animation: hero-float 6s ease-in-out infinite;
+  }
+
+  @keyframes hero-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+
+  /* Deriva lenta del resplandor de fondo */
+  .hero-glow {
+    animation: hero-glow-drift 12s ease-in-out infinite;
+  }
+
+  @keyframes hero-glow-drift {
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(0) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateX(-42%) translateY(18px) scale(1.08);
+      opacity: 0.85;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-word {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+    .hero-portrait,
+    .hero-glow {
+      animation: none;
+    }
+  }
+</style>

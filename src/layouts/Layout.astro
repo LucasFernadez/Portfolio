@@ -85,5 +85,58 @@ const jsonLd = {
   </head>
   <body class="min-h-screen antialiased">
     <slot />
+
+    <script>
+      // Reveal al hacer scroll: revela [data-reveal] al entrar en viewport.
+      // Aplica un retardo escalonado a los hijos directos de [data-reveal-group].
+      function setupReveal() {
+        const reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+        if (reduce) {
+          els.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+        );
+        els.forEach((el) => io.observe(el));
+
+        // Escalonado dentro de grupos.
+        document
+          .querySelectorAll<HTMLElement>("[data-reveal-group]")
+          .forEach((group) => {
+            const children = group.querySelectorAll<HTMLElement>("[data-reveal]");
+            children.forEach((child, i) => {
+              child.style.setProperty("--reveal-delay", `${i * 90}ms`);
+            });
+          });
+      }
+
+      // Spotlight que sigue al cursor en [data-spotlight].
+      function setupSpotlight() {
+        document
+          .querySelectorAll<HTMLElement>("[data-spotlight]")
+          .forEach((card) => {
+            card.addEventListener("pointermove", (e) => {
+              const rect = card.getBoundingClientRect();
+              card.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+              card.style.setProperty("--my", `${e.clientY - rect.top}px`);
+            });
+          });
+      }
+
+      setupReveal();
+      setupSpotlight();
+    </script>
   </body>
 </html>

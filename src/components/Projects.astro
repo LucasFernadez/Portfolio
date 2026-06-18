@@ -1,67 +1,192 @@
 ---
 import { projects } from "../data/site";
+
+// Duplicamos la lista para que el bucle del marquee no tenga saltos:
+// la segunda mitad entra por la derecha justo cuando la primera sale por la izquierda.
+const loop = [...projects, ...projects];
 ---
 
 <section id="proyectos" class="border-t border-border/60">
-  <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-    <div class="mb-12 flex items-end justify-between gap-4">
-      <div>
-        <p class="label-caps mb-2 text-xs font-medium text-muted">Trabajo</p>
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          Mis proyectos
-        </h2>
+  <div class="py-20 sm:py-24">
+    <div class="mx-auto mb-12 max-w-6xl px-5 sm:px-8" data-reveal>
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="label-caps mb-2 text-xs font-medium text-muted">Trabajo</p>
+          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+            Mis proyectos
+          </h2>
+        </div>
+        <div class="hidden h-px flex-1 bg-border sm:block"></div>
       </div>
-      <div class="hidden h-px flex-1 bg-border sm:block"></div>
     </div>
 
     {
       projects.length > 0 ? (
-        <div class="grid gap-6 sm:grid-cols-2">
-          {projects.map((p) => (
-            <article class="group relative overflow-hidden rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/60">
-              <div class="mb-5 flex h-40 items-center justify-center rounded-lg border border-border bg-gradient-to-br from-surface-2 to-bg">
-                <span class="label-caps text-xs text-muted">Vista previa</span>
-              </div>
-              <h3 class="text-xl font-semibold">{p.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-muted">
-                {p.description}
-              </p>
-              <div class="mt-4 flex flex-wrap gap-2">
-                {p.tags.map((t) => (
-                  <span class="rounded border border-border bg-surface-2 px-2 py-1 text-xs text-muted">
-                    {t}
-                  </span>
-                ))}
-              </div>
-              {p.link && (
-                <a
-                  href={p.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent-soft"
-                >
-                  Ver proyecto
-                  <span aria-hidden="true">→</span>
-                </a>
-              )}
-            </article>
-          ))}
+        <div class="marquee" data-marquee>
+          <div class="marquee__track" data-marquee-track>
+            {loop.map((p, i) => (
+              <article
+                data-spotlight
+                class="marquee__item group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/60"
+                aria-hidden={i >= projects.length ? "true" : undefined}
+              >
+                <div class="mb-5 h-40 overflow-hidden rounded-lg border border-border bg-gradient-to-br from-surface-2 to-bg">
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.imageAlt ?? p.title}
+                      loading="lazy"
+                      decoding="async"
+                      width="640"
+                      height="400"
+                      class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  ) : (
+                    <div class="flex h-full items-center justify-center">
+                      <span class="label-caps text-xs text-muted">Vista previa</span>
+                    </div>
+                  )}
+                </div>
+                <h3 class="text-xl font-semibold">{p.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted">
+                  {p.description}
+                </p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {p.tags.map((t) => (
+                    <span class="rounded border border-border bg-surface-2 px-2 py-1 text-xs text-muted">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                {p.link && (
+                  <a
+                    href={p.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabindex={i >= projects.length ? -1 : undefined}
+                    class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent-soft"
+                  >
+                    Ver proyecto
+                    <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
         </div>
       ) : (
-        <div class="rounded-xl border border-dashed border-border bg-surface/50 px-6 py-16 text-center">
-          <p class="text-lg font-medium">Proyectos en camino</p>
-          <p class="mx-auto mt-2 max-w-md text-sm text-secondary">
-            Estoy preparando una selección de mis mejores trabajos. Mientras
-            tanto, ¿hablamos de tu proyecto?
-          </p>
-          <a
-            href="#contacto"
-            class="mt-6 inline-flex items-center justify-center rounded-md border border-border bg-surface-2 px-5 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-muted hover:bg-surface hover:text-fg"
-          >
-            Contáctame
-          </a>
+        <div class="mx-auto max-w-6xl px-5 sm:px-8">
+          <div class="rounded-xl border border-dashed border-border bg-surface/50 px-6 py-16 text-center">
+            <p class="text-lg font-medium">Proyectos en camino</p>
+            <p class="mx-auto mt-2 max-w-md text-sm text-secondary">
+              Estoy preparando una selección de mis mejores trabajos. Mientras
+              tanto, ¿hablamos de tu proyecto?
+            </p>
+            <a
+              href="#contacto"
+              class="mt-6 inline-flex items-center justify-center rounded-md border border-border bg-surface-2 px-5 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-muted hover:bg-surface hover:text-fg"
+            >
+              Contáctame
+            </a>
+          </div>
         </div>
       )
     }
   </div>
 </section>
+
+<style>
+  /* Marquee: scroll infinito tipo "cilindro".
+     El track contiene las tarjetas duplicadas y se traslada -50%
+     (justo el ancho de la primera tanda) en bucle, sin saltos. */
+  .marquee {
+    /* Desvanecido lateral: las tarjetas se difuminan al entrar/salir,
+       reforzando la sensación de giro sobre un cilindro. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    overflow: hidden;
+  }
+
+  .marquee__track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    /* La duración la fija el JS según el nº de tarjetas para que la
+       velocidad sea constante (px/seg) independientemente de cuántas haya. */
+    animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+    will-change: transform;
+  }
+
+  /* Pausa al interactuar (hover / focus dentro del carrusel). */
+  .marquee:hover .marquee__track,
+  .marquee:focus-within .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__item {
+    flex: 0 0 auto;
+    width: 85vw;
+    max-width: 22rem;
+  }
+
+  @media (min-width: 640px) {
+    .marquee__item {
+      width: 24rem;
+    }
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* -50% = ancho exacto de la primera mitad (incluido su gap final). */
+      transform: translateX(calc(-50% - 0.75rem));
+    }
+  }
+
+  /* Accesibilidad: sin movimiento si el usuario lo ha pedido. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+      overflow-x: auto;
+    }
+  }
+</style>
+
+<script>
+  // Ajusta la duración de la animación a la anchura real del contenido
+  // para mantener una velocidad de scroll constante en cualquier pantalla.
+  function setMarqueeSpeed(marquee: HTMLElement) {
+    const track = marquee.querySelector<HTMLElement>("[data-marquee-track]");
+    if (!track) return;
+    const PX_PER_SECOND = 70; // velocidad de giro
+    // La mitad del track es una pasada completa de los proyectos.
+    const distance = track.scrollWidth / 2;
+    const duration = Math.max(20, distance / PX_PER_SECOND);
+    track.style.setProperty("--marquee-duration", `${duration}s`);
+  }
+
+  function init() {
+    document
+      .querySelectorAll<HTMLElement>("[data-marquee]")
+      .forEach(setMarqueeSpeed);
+  }
+
+  init();
+  window.addEventListener("resize", init);
+  // Recalcular cuando las imágenes carguen (cambian el ancho del track).
+  window.addEventListener("load", init);
+</script>

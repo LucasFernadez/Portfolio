@@ -1,10 +1,16 @@
 ---
 import { technologies } from "../data/site";
+import { techIcons } from "../data/techIcons";
+
+const items = technologies.map((name) => ({
+  name,
+  icon: techIcons[name],
+}));
 ---
 
 <section id="tecnologias" class="border-t border-border/60">
   <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-    <div class="mb-12">
+    <div class="mb-12" data-reveal>
       <p class="label-caps mb-2 text-xs font-medium text-muted">Stack</p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Tecnologías</h2>
       <p class="mt-3 max-w-lg text-sm text-secondary">
@@ -13,19 +19,260 @@ import { technologies } from "../data/site";
       </p>
     </div>
 
-    <div
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
-    >
-      {
-        technologies.map((tech) => (
-          <div class="flex items-center gap-3 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent/60">
-            <span class="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface-2 font-mono text-sm font-semibold text-accent">
-              {tech.slice(0, 2)}
-            </span>
-            <span class="text-sm font-medium">{tech}</span>
-          </div>
-        ))
-      }
+    <div class="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
+      <!-- Nube / órbita 3D -->
+      <div class="flex justify-center" data-reveal>
+        <div
+          data-techcloud
+          class="tech-cloud relative"
+          aria-hidden="true"
+        >
+          {
+            items.map((item) => (
+              <button
+                type="button"
+                class="tech-cloud__item group"
+                data-tech-title={item.icon?.title ?? item.name}
+                style={`--tech-color: #${item.icon?.hex ?? "22c55e"}`}
+              >
+                <span class="tech-cloud__chip">
+                  {item.icon ? (
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="tech-cloud__svg"
+                      role="img"
+                      aria-label={item.name}
+                    >
+                      <path d={item.icon.path} />
+                    </svg>
+                  ) : (
+                    <span class="font-mono text-xs">{item.name.slice(0, 2)}</span>
+                  )}
+                </span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Lista accesible / textual (también sirve sin JS) -->
+      <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2" data-reveal>
+        {
+          items.map((item) => (
+            <li
+              class="tech-pill flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 transition-colors hover:border-accent/60"
+              style={`--tech-color: #${item.icon?.hex ?? "22c55e"}`}
+            >
+              <span class="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-2">
+                {item.icon ? (
+                  <svg viewBox="0 0 24 24" class="h-4 w-4 fill-[var(--tech-color)]" aria-hidden="true">
+                    <path d={item.icon.path} />
+                  </svg>
+                ) : (
+                  <span class="font-mono text-xs text-accent">{item.name.slice(0, 2)}</span>
+                )}
+              </span>
+              <span class="text-sm font-medium">{item.name}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </div>
 </section>
+
+<style>
+  .tech-cloud {
+    width: 320px;
+    height: 320px;
+    transform-style: preserve-3d;
+    /* perspectiva para el efecto 3D real */
+    perspective: 800px;
+  }
+
+  @media (min-width: 640px) {
+    .tech-cloud {
+      width: 380px;
+      height: 380px;
+    }
+  }
+
+  .tech-cloud__item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* La posición 3D la calcula el JS vía --tx/--ty/--tz y escala con --s. */
+    transform: translate(-50%, -50%)
+      translate3d(var(--tx, 0), var(--ty, 0), 0) scale(var(--s, 1));
+    opacity: var(--o, 1);
+    will-change: transform, opacity;
+    cursor: pointer;
+  }
+
+  .tech-cloud__chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--tech-color) 8%, var(--color-surface));
+    box-shadow: 0 0 0 0 transparent;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .tech-cloud__item:hover .tech-cloud__chip,
+  .tech-cloud__item:focus-visible .tech-cloud__chip {
+    transform: scale(1.18);
+    border-color: var(--tech-color);
+    box-shadow:
+      0 0 18px -2px color-mix(in srgb, var(--tech-color) 70%, transparent),
+      0 0 40px -8px color-mix(in srgb, var(--tech-color) 50%, transparent);
+  }
+
+  .tech-cloud__svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--tech-color);
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tech-color) 45%, transparent));
+  }
+
+  /* Pista textual del logo bajo el cursor */
+  .tech-cloud__item::after {
+    content: attr(data-tech-title);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 0.7rem;
+    color: var(--color-secondary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .tech-cloud__item:hover::after {
+    opacity: 1;
+  }
+
+  /* Sin JS o con reduce-motion: mostrar como rejilla simple centrada */
+  @media (prefers-reduced-motion: reduce) {
+    .tech-cloud {
+      perspective: none;
+    }
+  }
+</style>
+
+<script>
+  type Item = HTMLElement;
+
+  function initCloud(root: HTMLElement) {
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>(".tech-cloud__item"),
+    );
+    if (items.length === 0) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // Radio de la esfera según el tamaño del contenedor.
+    const radius = () => root.clientWidth * 0.42;
+
+    // Distribución uniforme sobre una esfera (espiral de Fibonacci).
+    const n = items.length;
+    const points = items.map((_, i) => {
+      const phi = Math.acos(-1 + (2 * i + 1) / n);
+      const theta = Math.sqrt(n * Math.PI) * phi;
+      return {
+        x: Math.cos(theta) * Math.sin(phi),
+        y: Math.sin(theta) * Math.sin(phi),
+        z: Math.cos(phi),
+      };
+    });
+
+    let rotX = -0.2;
+    let rotY = 0;
+    // Velocidad de giro automática; el ratón la modula.
+    let velX = 0;
+    let velY = reduceMotion ? 0 : 0.0016;
+    let raf = 0;
+
+    function render() {
+      const r = radius();
+      const sinX = Math.sin(rotX),
+        cosX = Math.cos(rotX);
+      const sinY = Math.sin(rotY),
+        cosY = Math.cos(rotY);
+
+      points.forEach((p, idx) => {
+        // Rotación en Y
+        let x = p.x * cosY - p.z * sinY;
+        let z = p.x * sinY + p.z * cosY;
+        let y = p.y;
+        // Rotación en X
+        const y2 = y * cosX - z * sinX;
+        const z2 = y * sinX + z * cosX;
+        y = y2;
+        z = z2;
+
+        const el = items[idx] as Item;
+        // Escala y opacidad según profundidad (z de -1 a 1).
+        const depth = (z + 1) / 2; // 0 (atrás) .. 1 (delante)
+        const scale = 0.55 + depth * 0.65;
+        const opacity = 0.35 + depth * 0.65;
+        el.style.setProperty("--tx", `${(x * r).toFixed(1)}px`);
+        el.style.setProperty("--ty", `${(y * r).toFixed(1)}px`);
+        el.style.setProperty("--s", scale.toFixed(3));
+        el.style.setProperty("--o", opacity.toFixed(3));
+        // zIndex para que los de delante reciban el hover.
+        el.style.zIndex = String(Math.round(depth * 100));
+      });
+    }
+
+    function tick() {
+      rotY += velY;
+      rotX += velX;
+      // Amortiguar el empuje del ratón hacia la velocidad base.
+      velY += (0.0016 - velY) * 0.02;
+      velX += (0 - velX) * 0.04;
+      render();
+      raf = requestAnimationFrame(tick);
+    }
+
+    // Interacción con el ratón: mover el cursor acelera/dirige el giro.
+    root.addEventListener("mousemove", (e) => {
+      if (reduceMotion) return;
+      const rect = root.getBoundingClientRect();
+      const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
+      const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
+      velY = dx * 0.08;
+      velX = -dy * 0.06;
+    });
+
+    render();
+    if (!reduceMotion) tick();
+
+    // Recolocar al redimensionar.
+    window.addEventListener("resize", render);
+
+    // Pausar el rAF cuando no está visible (rendimiento).
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        if (!raf && !reduceMotion) tick();
+      } else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    });
+    io.observe(root);
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-techcloud]")
+    .forEach(initCloud);
+</script>
