@@ -27,7 +27,7 @@ const loop = [...projects, ...projects];
             {loop.map((p, i) => (
               <article
                 data-spotlight
-                class="marquee__item group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface p-6 transition-colors hover:border-accent/60"
+                class="marquee__item group relative flex flex-col overflow-hidden rounded-xl border border-border bg-gradient-to-b from-surface-2 to-surface p-6 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] transition-all duration-300 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/10"
                 aria-hidden={i >= projects.length ? "true" : undefined}
               >
                 <div class="mb-5 h-40 overflow-hidden rounded-lg border border-border bg-gradient-to-br from-surface-2 to-bg">

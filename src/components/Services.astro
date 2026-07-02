@@ -1,5 +1,19 @@
 ---
 import { services } from "../data/site";
+
+// Siluetas SVG (line-art) por servicio. Trazo con currentColor para heredar
+// el verde de acento. viewBox 24×24, estilo lineal fino acorde al diseño.
+const serviceIcons: Record<string, string> = {
+  // Desarrollo web a medida — código </>
+  code: '<path d="m8 6-6 6 6 6" /><path d="m16 6 6 6-6 6" />',
+  // Aplicaciones personalizadas — capas/paneles
+  app: '<rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />',
+  // SEO — lupa con tendencia al alza
+  seo: '<circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /><path d="m8 12 2 2 3-4" />',
+  // Mantenimiento web — llave/ajustes
+  maintenance:
+    '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.3-2.3 2.6-2.6Z" />',
+};
 ---
 
 <section id="servicios" class="border-t border-border/60">
@@ -7,22 +21,31 @@ import { services } from "../data/site";
     <div class="mb-12" data-reveal>
       <p class="label-caps mb-2 text-xs font-medium text-muted">Servicios</p>
       <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Cómo puedo ayudarte
+        Qué ofrecemos
       </h2>
-      <p class="mt-3 max-w-lg text-sm text-secondary">
-        Del desarrollo al posicionamiento: acompaño tu producto digital de
-        principio a fin.
-      </p>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+    <div class="grid gap-4 sm:grid-cols-2" data-reveal-group>
       {
         services.map((service) => (
           <article
             data-reveal
             data-spotlight
-            class="rounded-xl border border-border bg-surface p-6 transition-colors hover:-translate-y-1 hover:border-accent/60"
+            class="group rounded-xl border border-border bg-gradient-to-b from-surface-2 to-surface p-6 shadow-lg shadow-black/25 ring-1 ring-inset ring-white/[0.03] transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/10"
           >
+            <span class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-surface-2 text-accent shadow-md shadow-black/30 transition-all duration-300 group-hover:border-accent/60 group-hover:shadow-lg group-hover:shadow-accent/20">
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                set:html={serviceIcons[service.icon]}
+              />
+            </span>
             <h3 class="text-lg font-semibold text-accent">{service.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-secondary">
               {service.description}

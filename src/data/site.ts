@@ -31,28 +31,34 @@ export const site = {
 };
 
 // Servicios que ofreces. Se muestran como tarjetas y alimentan el SEO.
+// 'icon' referencia una silueta SVG definida en Services.astro (serviceIcons).
 export type Service = {
   title: string;
   description: string;
+  icon: "code" | "app" | "seo" | "maintenance";
 };
 
 export const services: Service[] = [
   {
+    icon: "code",
     title: "Desarrollo web a medida",
     description:
       "Sitios y plataformas full-stack rápidos, escalables y mantenibles, construidos con tecnologías modernas y código limpio.",
   },
   {
+    icon: "app",
     title: "Aplicaciones personalizadas",
     description:
       "Apps a medida adaptadas a tu negocio: desde herramientas internas hasta productos completos, diseñadas en torno a tus necesidades.",
   },
   {
+    icon: "seo",
     title: "Posicionamiento SEO",
     description:
       "Optimización técnica y de contenido para que tu web posicione en Google: rendimiento, datos estructurados, sitemap y buenas prácticas.",
   },
   {
+    icon: "maintenance",
     title: "Mantenimiento web",
     description:
       "Soporte continuo, mejoras de rendimiento, actualizaciones y nuevas funcionalidades para mantener tu producto al día.",
