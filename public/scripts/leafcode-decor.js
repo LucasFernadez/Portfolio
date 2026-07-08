@@ -21,8 +21,8 @@
       enabled: true,
       count: 22, // nº de hojas (con toda la página cabe alguna más)
       // Verdes EXACTOS de la paleta (global.css @theme):
-      //   #22c55e accent/Primary · #4b5d3f accent-soft/Secondary · #8ba888 Tertiary
-      colors: ["#22c55e", "#4b5d3f", "#8ba888"],
+      //   #16a34a accent/Primary · #15803d accent-soft · #4b5d3f oliva
+      colors: ["#16a34a", "#4b5d3f", "#8ba888"],
       opacity: 0.28, // opacidad de cada hoja
       size: 0.55, // escala base de la silueta
       speed: 0.45, // multiplicador de velocidad de caída
@@ -77,7 +77,7 @@
       formSelector: "#contacto form",
       buttonSelector: 'button[type="submit"]',
       successParam: "enviado", // parámetro de la URL que marca envío correcto
-      leafColor: "#22c55e", // verde accent/Primary de la paleta
+      leafColor: "#16a34a", // verde accent/Primary de la paleta
     },
 
     // ============ FASE 3 — barra de navegación ============
@@ -91,9 +91,11 @@
         navSelector: "header",
         threshold: 40, // px de scroll para activar
         hysteresis: 10, // margen anti-parpadeo alrededor del umbral
-        bg: "rgba(10, 16, 12, 0.75)", // tono real del tema (--color-bg) con alpha
+        // Colores derivados de las variables del tema: así el cristal
+        // se adapta solo al alternar entre modo claro y oscuro.
+        bg: "color-mix(in srgb, var(--color-bg) 75%, transparent)",
         blur: "12px",
-        border: "rgba(34, 197, 94, 0.15)", // verde de marca a baja opacidad
+        border: "color-mix(in srgb, var(--color-accent) 22%, transparent)",
         compact: 0.75, // factor de padding vertical al compactar (sticky/fixed)
       },
       // 8) Enredadera scroll-spy bajo los enlaces
@@ -104,7 +106,7 @@
         linksSelector: 'header nav ul a[href^="#"]',
         // Secciones destino (todas existen en la página).
         sections: ["#proyectos", "#tecnologias", "#contacto"],
-        color: "#22c55e", // verde de marca
+        color: "#16a34a", // verde de marca
         height: 2, // grosor del tallo (px)
         speed: 500, // duración de la animación del tallo (ms)
         clickLock: 800, // ms que se ignora el spy tras un click
@@ -120,12 +122,13 @@
       // 10) Botón "Hablemos" magnético con brote
       ctaMagnet: {
         enabled: true,
-        // El CTA es el <a href="#contacto"> hijo directo del <nav> (no el de la lista).
-        selector: 'header nav > a[href="#contacto"]',
+        // El CTA es el <a href="#contacto"> del grupo de acciones del nav
+        // (vive en un <div> junto al botón de tema; no el de la lista <ul>).
+        selector: 'header nav > div > a[href="#contacto"]',
         radius: 80, // distancia (px) a la que empieza a atraer
         maxShift: 3, // desplazamiento máximo hacia el cursor (px)
         lerp: 0.15, // suavizado del movimiento
-        leafColor: "#22c55e", // verde de la hojita del hover
+        leafColor: "#16a34a", // verde de la hojita del hover
       },
     },
   };
@@ -184,7 +187,7 @@
       // Fallback más opaco si el navegador no soporta backdrop-filter.
       "@supports not ((backdrop-filter:blur(1px)) or " +
       "(-webkit-backdrop-filter:blur(1px))){" +
-      ".lc-nav-scrolled{background:rgba(10,16,12,.95)!important;}}";
+      ".lc-nav-scrolled{background:var(--color-bg)!important;}}";
     document.head.appendChild(css);
 
     // Padding vertical original del <nav> interno (para compactar/restaurar).

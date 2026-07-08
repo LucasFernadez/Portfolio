@@ -99,9 +99,15 @@ import { site } from "../data/site";
     }
   }
 
-  /* Retrato con flotación suave continua */
+  /* Retrato con flotación suave continua.
+     El PNG es line-art de trazo blanco (pensado para fondo oscuro);
+     en el tema claro se invierte para que el trazo sea oscuro. */
   .hero-portrait {
+    filter: invert(1);
     animation: hero-float 6s ease-in-out infinite;
+  }
+  :global(html.dark) .hero-portrait {
+    filter: none;
   }
 
   @keyframes hero-float {

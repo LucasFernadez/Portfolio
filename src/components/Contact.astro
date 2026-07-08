@@ -115,11 +115,18 @@ import { site } from "../data/site";
   [data-form-status].is-success {
     border: 1px solid color-mix(in srgb, var(--color-accent) 60%, transparent);
     background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-    color: var(--color-accent);
+    color: var(--color-accent-soft);
   }
   [data-form-status].is-error {
     border: 1px solid color-mix(in srgb, #ef4444 60%, transparent);
-    background: color-mix(in srgb, #ef4444 12%, transparent);
+    background: color-mix(in srgb, #ef4444 10%, transparent);
+    color: #b91c1c;
+  }
+  /* En modo oscuro los textos de estado deben ser claros. */
+  :global(html.dark) [data-form-status].is-success {
+    color: var(--color-accent);
+  }
+  :global(html.dark) [data-form-status].is-error {
     color: #fca5a5;
   }
 </style>

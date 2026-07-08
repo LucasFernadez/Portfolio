@@ -1,8 +1,37 @@
 @import "tailwindcss";
 
-/* Design system Leaf — verdes orgánicos sobre fondo oscuro.
-   Primary #22C55E · Secondary #4B5D3F · Tertiary #8BA888 · Neutral #0F1713 */
+/* El modo oscuro se activa con la clase .dark en <html> (no por el
+   sistema): así el usuario lo controla con el botón del header. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design system Leaf — verdes orgánicos sobre fondo claro (tema por
+   defecto). Primary #16A34A · Secondary #15803D · Oliva #4B5D3F */
 @theme {
+  --color-bg: #ffffff; /* fondo (blanco) */
+  --color-surface: #f2f6f2; /* Neutral — paneles */
+  --color-surface-2: #fafcfa; /* superficie elevada (casi blanca) */
+  --color-border: #d8e3d8;
+  --color-fg: #14251a; /* texto principal (verde casi negro) */
+  --color-secondary: #47593f; /* verde oliva oscuro — texto secundario */
+  --color-muted: #5f7a5c; /* texto atenuado */
+
+  /* El acento del sistema es el verde Primary */
+  --color-accent: #16a34a; /* Primary — legible sobre blanco */
+  --color-accent-soft: #15803d; /* verde más profundo para hovers */
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "Courier New", monospace;
+}
+
+/* Ajustes decorativos que cambian con el tema (no son tokens Tailwind). */
+:root {
+  --grid-line: rgba(75, 93, 63, 0.07); /* líneas del grid de fondo */
+  --hero-glow: rgba(22, 163, 74, 0.08); /* resplandor superior */
+  --spotlight-strength: 12%; /* intensidad del spotlight en tarjetas */
+}
+
+/* Modo oscuro — la paleta original del sitio (negro verdoso + verde). */
+.dark {
   --color-bg: #0a100c; /* fondo (negro verdoso) */
   --color-surface: #0f1713; /* Neutral — paneles */
   --color-surface-2: #18211b; /* superficie elevada */
@@ -10,13 +39,12 @@
   --color-fg: #eef3ef; /* texto principal (verde casi blanco) */
   --color-secondary: #8ba888; /* Tertiary — texto secundario claro */
   --color-muted: #6f8a6c; /* texto atenuado */
-
-  /* El acento del sistema es el verde Primary */
   --color-accent: #22c55e; /* Primary */
   --color-accent-soft: #4b5d3f; /* Secondary — verde oliva apagado */
 
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, "Courier New", monospace;
+  --grid-line: rgba(139, 168, 136, 0.045);
+  --hero-glow: rgba(34, 197, 94, 0.1);
+  --spotlight-strength: 18%;
 }
 
 html {
@@ -41,13 +69,13 @@ body::before {
   pointer-events: none;
   background:
     /* Líneas verticales y horizontales del grid (tinte verde) */
-    linear-gradient(to right, rgba(139, 168, 136, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(139, 168, 136, 0.045) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
-/* Capa de degradado encima del grid: aclara arriba (Neutral/gris)
-   y oscurece hacia los bordes para difuminar el grid (efecto viñeta). */
+/* Capa de degradado encima del grid: tinte verde suave arriba y
+   fundido al color de fondo hacia los bordes para difuminar el grid. */
 body::after {
   content: "";
   position: fixed;
@@ -57,7 +85,7 @@ body::after {
   background:
     radial-gradient(
       ellipse 80% 60% at 50% 0%,
-      rgba(34, 197, 94, 0.1) 0%,
+      var(--hero-glow) 0%,
       transparent 60%
     ),
     radial-gradient(
@@ -67,7 +95,7 @@ body::after {
     );
 }
 
-/* Scrollbar discreta acorde al tema oscuro */
+/* Scrollbar discreta acorde al tema (usa los tokens de color) */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -131,7 +159,7 @@ body::after {
   transition: opacity 0.3s ease;
   background: radial-gradient(
     260px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--color-accent) 18%, transparent),
+    color-mix(in srgb, var(--color-accent) var(--spotlight-strength), transparent),
     transparent 60%
   );
   z-index: 0;
