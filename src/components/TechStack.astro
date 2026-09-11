@@ -54,10 +54,11 @@ const items = technologies.map((name) => ({
       <!-- Lista accesible / textual (también sirve sin JS) -->
       <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2" data-reveal>
         {
-          items.map((item) => (
+          items.map((item, i) => (
             <li
               class="tech-pill flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 transition-colors hover:border-accent/60"
               style={`--tech-color: #${item.icon?.hex ?? "22c55e"}`}
+              data-tech-index={i}
             >
               <span class="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-2">
                 {item.icon ? (
@@ -122,7 +123,8 @@ const items = technologies.map((name) => ({
   }
 
   .tech-cloud__item:hover .tech-cloud__chip,
-  .tech-cloud__item:focus-visible .tech-cloud__chip {
+  .tech-cloud__item:focus-visible .tech-cloud__chip,
+  .tech-cloud__item.is-active .tech-cloud__chip {
     transform: scale(1.18);
     border-color: var(--tech-color);
     box-shadow:
@@ -151,8 +153,14 @@ const items = technologies.map((name) => ({
     transition: opacity 0.2s ease;
     pointer-events: none;
   }
-  .tech-cloud__item:hover::after {
+  .tech-cloud__item:hover::after,
+  .tech-cloud__item.is-active::after {
     opacity: 1;
+  }
+
+  /* Con una tecnología seleccionada desde la lista, el resto se atenúa. */
+  .tech-cloud.has-focus .tech-cloud__item:not(.is-active) {
+    opacity: calc(var(--o, 1) * 0.45);
   }
 
   /* Sin JS o con reduce-motion: mostrar como rejilla simple centrada */
@@ -230,19 +238,67 @@ const items = technologies.map((name) => ({
       });
     }
 
+    // Tecnología seleccionada desde la lista: la esfera gira hasta
+    // ponerla delante (x = 0, y = 0, z = 1) y se queda ahí.
+    let focus: { x: number; y: number } | null = null;
+
+    // Ángulo destino por el camino más corto desde el actual.
+    const nearest = (from: number, to: number) =>
+      from + Math.atan2(Math.sin(to - from), Math.cos(to - from));
+
+    function focusOn(idx: number) {
+      const p = points[idx];
+      // Rotación en Y que anula x; luego rotación en X que anula y
+      // (inversa de las rotaciones aplicadas en render()).
+      const ty = Math.atan2(p.x, p.z);
+      const zAfterY = Math.hypot(p.x, p.z);
+      const tx = Math.atan2(p.y, zAfterY);
+      focus = { x: nearest(rotX, tx), y: nearest(rotY, ty) };
+      items.forEach((el, i) => el.classList.toggle("is-active", i === idx));
+      root.classList.add("has-focus");
+      if (reduceMotion) {
+        rotX = focus.x;
+        rotY = focus.y;
+        render();
+      }
+    }
+
+    function clearFocus() {
+      focus = null;
+      velX = 0;
+      velY = 0; // arranca desde parado y acelera suave hasta la base
+      items.forEach((el) => el.classList.remove("is-active"));
+      root.classList.remove("has-focus");
+    }
+
     function tick() {
-      rotY += velY;
-      rotX += velX;
-      // Amortiguar el empuje del ratón hacia la velocidad base.
-      velY += (0.0016 - velY) * 0.02;
-      velX += (0 - velX) * 0.04;
+      if (focus) {
+        rotX += (focus.x - rotX) * 0.1;
+        rotY += (focus.y - rotY) * 0.1;
+      } else {
+        rotY += velY;
+        rotX += velX;
+        // Amortiguar el empuje del ratón hacia la velocidad base.
+        velY += (0.0016 - velY) * 0.02;
+        velX += (0 - velX) * 0.04;
+      }
       render();
       raf = requestAnimationFrame(tick);
     }
 
+    // Fichas de la lista: al pasar el ratón, esa tecnología pasa al frente.
+    root
+      .closest("section")
+      ?.querySelectorAll<HTMLElement>("[data-tech-index]")
+      .forEach((pill) => {
+        const idx = Number(pill.dataset.techIndex);
+        pill.addEventListener("mouseenter", () => focusOn(idx));
+        pill.addEventListener("mouseleave", clearFocus);
+      });
+
     // Interacción con el ratón: mover el cursor acelera/dirige el giro.
     root.addEventListener("mousemove", (e) => {
-      if (reduceMotion) return;
+      if (reduceMotion || focus) return;
       const rect = root.getBoundingClientRect();
       const dx = (e.clientX - (rect.left + rect.width / 2)) / rect.width;
       const dy = (e.clientY - (rect.top + rect.height / 2)) / rect.height;
