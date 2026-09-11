@@ -65,13 +65,19 @@ export const services: Service[] = [
   },
 ];
 
-// Proyectos: rellénalos más adelante. Deja la lista vacía y se muestra un placeholder.
+// Proyectos: se muestran como casos de estudio en filas alternas.
+// Para añadir uno nuevo basta con añadir un objeto a la lista (el orden
+// de la lista es el orden en la web). Lista vacía = placeholder.
 export type Project = {
   title: string;
+  // Tipo de trabajo (se muestra como etiqueta sobre el título).
+  category: string;
   description: string;
+  // Qué se hizo en el proyecto: 2–4 puntos breves.
+  highlights?: string[];
   tags: string[];
   link?: string;
-  // Ruta a la captura del proyecto (en /public). Si falta, se muestra un placeholder.
+  // Captura del proyecto (en /public), idealmente 16:10. Si falta, placeholder.
   image?: string;
   // Texto alternativo de la imagen (accesibilidad).
   imageAlt?: string;
@@ -80,17 +86,44 @@ export type Project = {
 export const projects: Project[] = [
   {
     title: "Ribera9Trainer",
+    category: "Web corporativa",
     description:
       "Web profesional para un entrenador online de fuerza especializado en powerlifting: presentación de servicios, metodología, atletas, blog y captación de clientes. Sitio rápido y optimizado para SEO.",
+    highlights: [
+      "Diseño y desarrollo completo del sitio",
+      "Blog y formulario de captación de clientes",
+      "Rendimiento y SEO técnico optimizados",
+    ],
     tags: ["Astro", "Tailwind", "TypeScript", "SEO"],
     link: "https://www.ribera9trainer.com",
     image: "/proyectos/ribera9trainer.webp",
     imageAlt: "Página de inicio de Ribera9Trainer, web de entrenamiento de powerlifting",
   },
   {
-    title: "Mantenimiento web WordPress",
+    title: "Canji Studio",
+    category: "Web corporativa",
+    description:
+      "Web para un estudio de desarrollo de producto de moda con sede en Barcelona: presentación del estudio, servicios, galería de colecciones y captación de nuevos proyectos. Diseño editorial y minimalista que deja todo el protagonismo a las prendas.",
+    highlights: [
+      "Diseño editorial minimalista y responsive",
+      "Galería de trabajos con imágenes optimizadas",
+      "Secciones de servicios y contacto orientadas a captar clientes",
+    ],
+    tags: ["Next.js", "React", "Tailwind"],
+    link: "https://canji.studio",
+    image: "/proyectos/canji.webp",
+    imageAlt: "Sección de trabajos de Canji Studio con prendas de sus colecciones",
+  },
+  {
+    title: "The Apartment",
+    category: "Mantenimiento WordPress",
     description:
       "Gestión y mantenimiento continuo de un sitio WordPress: actualizaciones de núcleo, plugins y temas, copias de seguridad, mejoras de rendimiento y seguridad, resolución de incidencias y nuevas funcionalidades a demanda.",
+    highlights: [
+      "Actualizaciones y copias de seguridad",
+      "Mejoras de rendimiento y seguridad",
+      "Nuevas funcionalidades a demanda",
+    ],
     tags: ["WordPress", "PHP", "Mantenimiento", "SEO"],
     link: "https://theapartment.es",
     image: "/proyectos/theapartment.webp",
@@ -98,35 +131,17 @@ export const projects: Project[] = [
   },
   {
     title: "Entrenador Voleibol",
+    category: "Aplicación web (PWA)",
     description:
-      "Aplicación web (PWA instalable y offline) para entrenadores de voleibol: marcador en tiempo real, gestión de sets, estadísticas individuales por jugadora y resumen completo del partido. Datos persistentes en el dispositivo.",
+      "Aplicación web instalable para entrenadores de voleibol: marcador en tiempo real, gestión de sets, estadísticas individuales por jugadora y resumen completo del partido. Datos persistentes en el dispositivo.",
+    highlights: [
+      "Marcador y gestión de sets en tiempo real",
+      "Estadísticas individuales por jugadora",
+      "Instalable y funciona sin conexión",
+    ],
     tags: ["PWA", "JavaScript", "Service Worker", "LocalStorage"],
     image: "/proyectos/volei.webp",
     imageAlt: "Pantalla de la app Entrenador Voleibol para registrar jugadoras y estadísticas",
-  },
-  {
-    title: "Arise",
-    description:
-      "Aplicación web progresiva (PWA) de productividad gamificada: convierte tus tareas diarias en una experiencia de juego con XP, niveles y recompensas. Instalable, funciona offline y guarda tus datos de forma privada.",
-    tags: ["PWA", "JavaScript", "Firebase", "Service Worker"],
-    image: "/proyectos/arise.webp",
-    imageAlt: "Pantalla de acceso de Arise, app de productividad gamificada",
-  },
-  {
-    title: "Quedar",
-    description:
-      "Aplicación para coordinar quedadas entre amigos: cada persona marca sus días disponibles en un calendario compartido y la app encuentra las fechas en las que coincide todo el grupo.",
-    tags: ["Node.js", "Express", "MongoDB", "JavaScript"],
-    image: "/proyectos/quedar.webp",
-    imageAlt: "Calendario compartido de la app Quedar para coordinar fechas",
-  },
-  {
-    title: "Control de Horas",
-    description:
-      "Aplicación web para contabilizar las horas de trabajo de los empleados de una tienda: alta de trabajadores, registro de jornadas con entrada y salida, y cálculo automático de horas trabajadas.",
-    tags: ["PWA", "JavaScript", "Service Worker", "LocalStorage"],
-    image: "/proyectos/control-horas.webp",
-    imageAlt: "Panel de Control de Horas de Trabajo para gestionar empleados y jornadas",
   },
 ];
 

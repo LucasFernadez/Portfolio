@@ -36,7 +36,7 @@
     tilt: {
       enabled: true,
       // Tarjetas reales de Servicios y Proyectos.
-      selector: "#servicios article, #proyectos article.marquee__item",
+      selector: "#servicios article, #proyectos [data-tilt]",
       maxDeg: 5, // inclinación máxima en grados
       scale: 1.015, // escala en hover
     },
@@ -388,8 +388,8 @@
 
   /* ---------- 2) TILT EN TARJETAS ----------
      Las tarjetas reales ya usan transforms propios de Tailwind
-     (hover:-translate-y en Servicios, y el marquee traslada el track
-     en Proyectos). Para NO romperlos, no tocamos el <article>: creamos
+     (hover:-translate-y en Servicios, y el reveal en las capturas de
+     Proyectos). Para NO romperlos, no tocamos el <article>: creamos
      un wrapper interno que recibe el tilt y movemos su contenido dentro.
      Así los transforms/hover existentes del article siguen intactos. */
   function initTilt() {
