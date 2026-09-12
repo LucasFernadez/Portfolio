@@ -14,45 +14,983 @@ const serviceIcons: Record<string, string> = {
   maintenance:
     '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.3-2.3 2.6-2.6Z" />',
 };
+
+// Silueta de hoja (se usa en las capas 3D del nodo y en el brote final).
+const LEAF_PATH = "M21 3C21 12.4 13.4 20 4 20H3v-1C3 9.6 10.6 2 20 2h1v1Z";
+const LEAF_VEIN = "M20 3C12 6 7 11 4 19";
 ---
 
+{/*
+  La sección tiene dos modos:
+  · Vertical (móvil/tablet y sin JS): la rama baja por el lateral.
+  · Horizontal (escritorio, lo activa el JS con la clase .is-horizontal):
+    la sección se queda fija y el scroll vertical desplaza la rama hacia
+    la derecha. La altura extra del contenedor [data-pin] es el recorrido.
+*/}
 <section id="servicios" class="border-t border-border/60">
-  <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
-    <div class="mb-12" data-reveal>
-      <p class="label-caps mb-2 text-xs font-medium text-muted">Servicios</p>
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Qué ofrecemos
-      </h2>
-    </div>
-
-    <div class="grid gap-4 sm:grid-cols-2" data-reveal-group>
-      {
-        services.map((service) => (
-          <article
-            data-reveal
-            data-spotlight
-            class="group rounded-xl border border-border bg-gradient-to-b from-surface-2 to-surface p-6 shadow-lg shadow-black/[0.06] ring-1 ring-inset ring-black/[0.03] transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/60 hover:shadow-xl hover:shadow-accent/10 dark:shadow-black/25 dark:ring-white/[0.03]"
-          >
-            <span class="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-surface-2 text-accent shadow-md shadow-black/[0.08] dark:shadow-black/30 transition-all duration-300 group-hover:border-accent/60 group-hover:shadow-lg group-hover:shadow-accent/20">
-              <svg
-                viewBox="0 0 24 24"
-                class="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                set:html={serviceIcons[service.icon]}
-              />
-            </span>
-            <h3 class="text-lg font-semibold text-accent">{service.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-secondary">
-              {service.description}
+  <div class="svc-pin" data-pin>
+    <div class="svc-stage py-20 sm:py-24">
+      <div
+        class="svc-head shell mb-16 sm:mb-20"
+        data-reveal
+      >
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <p class="label-caps mb-2 text-xs font-medium text-muted">
+              Servicios
             </p>
-          </article>
-        ))
-      }
+            <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+              Qué ofrecemos
+            </h2>
+          </div>
+          <div class="hidden h-px flex-1 bg-border sm:block"></div>
+        </div>
+        <p class="mt-4 max-w-2xl text-secondary">
+          Cuatro formas de hacer crecer tu proyecto, desde la primera línea de
+          código hasta el mantenimiento del día a día.
+        </p>
+
+        <!-- Progreso del recorrido horizontal (oculto en modo vertical) -->
+        <div class="svc-progress" aria-hidden="true">
+          <span class="svc-progress__bar"></span>
+        </div>
+      </div>
+
+      <div class="svc-rail shell">
+        <div class="svc-garden" data-garden>
+          <!-- Rama principal -->
+          <div class="svc-stem" aria-hidden="true">
+            <span class="svc-stem__track"></span>
+            <span class="svc-stem__grow" data-tip></span>
+            <span class="svc-stem__sap"></span>
+          </div>
+
+          <ol class="svc-list">
+            {
+              services.map((service, i) => (
+                <li
+                  class:list={[
+                    "svc-node",
+                    i % 2 === 0 ? "svc-node--even" : "svc-node--odd",
+                  ]}
+                  data-node
+                >
+                  {/* Ramita que une la rama principal con la tarjeta */}
+                  <svg
+                    class="svc-branch"
+                    viewBox="0 0 64 40"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M0 20C24 20 34 19 62 11" />
+                  </svg>
+
+                  {/* Nodo 3D: hojas de fondo + chip con el icono del servicio */}
+                  <span class="svc-leaf" aria-hidden="true">
+                    <span class="svc-leaf__float">
+                      <span class="svc-leaf__disc">
+                        <svg
+                          class="svc-leaf__blade svc-leaf__blade--a"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d={LEAF_PATH} />
+                        </svg>
+                        <svg
+                          class="svc-leaf__blade svc-leaf__blade--b"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d={LEAF_PATH} />
+                        </svg>
+                        <span class="svc-leaf__chip">
+                          <svg
+                            viewBox="0 0 24 24"
+                            class="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.75"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            set:html={serviceIcons[service.icon]}
+                          />
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+
+                  {/* --i escalona la entrada de cada línea dentro de la tarjeta */}
+                  <article class="svc-card" data-tilt data-spotlight>
+                    <div
+                      class="svc-card__row flex items-center gap-3"
+                      style="--i: 0"
+                    >
+                      <span class="font-mono text-sm font-medium text-accent">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span class="h-px w-8 bg-border" />
+                    </div>
+
+                    <h3
+                      class="svc-card__row mt-4 text-xl font-semibold tracking-tight sm:text-2xl"
+                      style="--i: 1"
+                    >
+                      {service.title}
+                    </h3>
+                    <p
+                      class="svc-card__row mt-3 text-sm leading-relaxed text-secondary"
+                      style="--i: 2"
+                    >
+                      {service.description}
+                    </p>
+
+                    <ul class="mt-5 space-y-2.5">
+                      {service.includes.map((item, j) => (
+                        <li
+                          class="svc-card__row flex items-start gap-3 text-sm text-fg"
+                          style={`--i: ${3 + j}`}
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            class="svc-check mt-0.5 h-4 w-4 flex-none text-accent"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.25"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </li>
+              ))
+            }
+          </ol>
+
+          <!-- Brote final: la rama termina en una llamada a la acción -->
+          <div class="svc-bud" data-bud>
+            <span class="svc-bud__sprout" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="svc-bud__blade svc-bud__blade--l">
+                <path d={LEAF_PATH} />
+                <path class="svc-bud__vein" d={LEAF_VEIN} />
+              </svg>
+              <svg viewBox="0 0 24 24" class="svc-bud__blade svc-bud__blade--r">
+                <path d={LEAF_PATH} />
+                <path class="svc-bud__vein" d={LEAF_VEIN} />
+              </svg>
+            </span>
+            <div class="svc-bud__body">
+              <p class="svc-bud__text">¿Y si el siguiente proyecto es el tuyo?</p>
+              <a
+                href="#contacto"
+                class="mt-5 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-semibold text-bg transition-all hover:-translate-y-0.5 hover:bg-accent-soft"
+              >
+                Cuéntame tu idea
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* =================================================================
+     MODO VERTICAL (base: móvil, tablet y sin JS)
+     --grow (0→1) lo escribe el JS con el scroll y controla el largo de
+     la rama y la posición de la savia. Cada nodo se abre cuando la
+     punta de la rama lo alcanza (.is-open).
+     ================================================================= */
+  .svc-garden {
+    position: relative;
+    perspective: 1200px;
+    /* Posición de la rama en móvil: separada del borde lo justo para
+       que las hojas del nodo no se corten. */
+    --stem-x: 30px;
+  }
+
+  /* Rama principal */
+  .svc-stem {
+    position: absolute;
+    top: 1.5rem;
+    /* El JS ajusta --stem-bottom para que la rama muera justo en el
+       brote final; 5.5rem es la aproximación si no hay JS. */
+    bottom: var(--stem-bottom, 5.5rem);
+    left: var(--stem-x);
+    width: 2px;
+    pointer-events: none;
+  }
+  .svc-stem__track,
+  .svc-stem__grow {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+  }
+  .svc-stem__track {
+    background: linear-gradient(
+      to bottom,
+      var(--color-border),
+      color-mix(in srgb, var(--color-border) 25%, transparent)
+    );
+  }
+  .svc-stem__grow {
+    transform-origin: top center;
+    transform: scaleY(var(--grow, 1));
+    background: linear-gradient(
+      to bottom,
+      var(--color-accent-soft),
+      var(--color-accent)
+    );
+    box-shadow: 0 0 14px -2px
+      color-mix(in srgb, var(--color-accent) 55%, transparent);
+  }
+  /* Gota de savia en la punta de la rama mientras crece */
+  .svc-stem__sap {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--grow, 1) * 100%);
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    opacity: var(--sap-o, 0);
+    box-shadow: 0 0 16px 2px
+      color-mix(in srgb, var(--color-accent) 65%, transparent);
+    transition: opacity 0.3s ease;
+  }
+
+  /* Nodos */
+  .svc-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .svc-node {
+    position: relative;
+    padding-left: calc(var(--stem-x) + 40px);
+    /* Perspectiva propia: sin ella el giro de entrada de la tarjeta se
+       vería plano (la del .svc-garden solo afecta a sus hijos directos). */
+    perspective: 1000px;
+  }
+
+  /* Ramita rama → tarjeta */
+  .svc-branch {
+    position: absolute;
+    left: var(--stem-x);
+    top: 28px;
+    width: 44px;
+    height: 28px;
+    color: var(--color-border);
+    transform: translateY(-50%);
+    /* Se dibuja cuando el nodo se abre */
+    stroke-dasharray: 72;
+    stroke-dashoffset: 0;
+  }
+  .svc-node.is-open .svc-branch {
+    color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  }
+
+  /* Nodo 3D con la hoja */
+  .svc-leaf {
+    position: absolute;
+    left: var(--stem-x);
+    top: 28px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    /* En móvil el nodo va algo más pequeño para que quepa junto al borde. */
+    transform: translate(-50%, -50%) scale(0.86);
+    transform-style: preserve-3d;
+  }
+  .svc-leaf__float {
+    display: grid;
+    place-items: center;
+    transform-style: preserve-3d;
+    animation: svc-sway 7s ease-in-out infinite;
+    animation-delay: var(--sway-delay, 0ms);
+  }
+  .svc-leaf__disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    transform-style: preserve-3d;
+    transition:
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.7s ease;
+  }
+  /* Hojas de fondo: dan volumen al girar el nodo */
+  .svc-leaf__blade {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    fill: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    stroke: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    stroke-width: 1;
+  }
+  .svc-leaf__blade--a {
+    transform: translate3d(-14px, 6px, -18px) rotate(24deg);
+  }
+  .svc-leaf__blade--b {
+    transform: translate3d(14px, -6px, -10px) rotate(-150deg);
+  }
+  .svc-leaf__chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    color: var(--color-accent);
+    box-shadow: 0 6px 18px -6px rgb(0 0 0 / 0.25);
+    transform: translateZ(16px);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .svc-node.is-open .svc-leaf__chip {
+    border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+    box-shadow:
+      0 6px 18px -6px rgb(0 0 0 / 0.25),
+      0 0 22px -6px color-mix(in srgb, var(--color-accent) 70%, transparent);
+  }
+
+  /* Tarjeta */
+  .svc-card {
+    position: relative;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(
+      to bottom,
+      var(--color-surface-2),
+      var(--color-surface)
+    );
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.18);
+    /* Se abre desde el lado de la rama (en vertical, siempre el izquierdo). */
+    transform-origin: left center;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      opacity 0.7s ease,
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .svc-card:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    box-shadow: 0 16px 40px -16px
+      color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+  /* Destello del borde al aterrizar la tarjeta */
+  .svc-card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 70%, transparent);
+    box-shadow: 0 0 24px -6px
+      color-mix(in srgb, var(--color-accent) 60%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Contenido de la tarjeta: cada línea entra detrás de la anterior */
+  .svc-card__row {
+    transition:
+      opacity 0.55s ease,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .svc-check path {
+    transition: stroke-dashoffset 0.45s ease-out;
+  }
+
+  /* Barra de progreso: solo tiene sentido en el recorrido horizontal */
+  .svc-progress {
+    display: none;
+  }
+
+  /* ---- Estados de crecimiento (solo con JS activo) ---- */
+  .svc-garden.is-armed .svc-branch {
+    stroke-dashoffset: 72;
+    transition: stroke-dashoffset 0.8s ease-out 0.1s;
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-branch {
+    stroke-dashoffset: 0;
+  }
+
+  .svc-garden.is-armed .svc-leaf__disc {
+    opacity: 0;
+    transform: rotateY(-100deg) rotateZ(-30deg) scale(0.45);
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-leaf__disc {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* La tarjeta se abre en 3D desde la rama, como una hoja desplegándose */
+  .svc-garden.is-armed .svc-card {
+    opacity: 0;
+    transform: translate3d(-26px, 22px, -70px) rotateY(22deg) scale(0.96);
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-card {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.18s;
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-card::after {
+    animation: svc-card-land 1.2s ease-out 0.3s both;
+  }
+
+  /* Líneas del contenido: aparecen escalonadas tras la tarjeta */
+  .svc-garden.is-armed .svc-card__row {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .svc-garden.is-armed .svc-check path {
+    stroke-dasharray: 26;
+    stroke-dashoffset: 26;
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-card__row {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.36s + var(--i, 0) * 0.07s);
+  }
+  .svc-garden.is-armed .svc-node.is-open .svc-check path {
+    stroke-dashoffset: 0;
+    transition-delay: calc(0.46s + var(--i, 0) * 0.07s);
+  }
+
+  @keyframes svc-card-land {
+    0% {
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes svc-sway {
+    0%,
+    100% {
+      transform: rotateY(-10deg) rotateX(4deg) translateY(0);
+    }
+    50% {
+      transform: rotateY(10deg) rotateX(-4deg) translateY(-6px);
+    }
+  }
+
+  /* ---- Brote final con la llamada a la acción ---- */
+  .svc-bud {
+    position: relative;
+    margin-top: 3.5rem;
+    padding-left: calc(var(--stem-x) + 44px);
+    transform-style: preserve-3d;
+  }
+  .svc-bud__sprout {
+    position: absolute;
+    left: var(--stem-x);
+    top: 6px;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    transform: translate(-50%, -50%);
+    transform-style: preserve-3d;
+  }
+  .svc-bud__blade {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    fill: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    stroke: var(--color-accent);
+    stroke-width: 1.1;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .svc-bud__vein {
+    fill: none;
+    stroke-width: 0.8;
+    opacity: 0.7;
+  }
+  .svc-bud__blade--l {
+    transform: translate3d(-12px, -4px, 8px) rotate(-8deg);
+  }
+  .svc-bud__blade--r {
+    transform: translate3d(12px, -4px, -8px) rotate(172deg);
+  }
+  .svc-garden.is-armed .svc-bud__blade--l {
+    transform: translate3d(0, 8px, 0) rotate(-60deg) scale(0.2);
+  }
+  .svc-garden.is-armed .svc-bud__blade--r {
+    transform: translate3d(0, 8px, 0) rotate(120deg) scale(0.2);
+  }
+  .svc-garden.is-armed .svc-bud.is-open .svc-bud__blade--l {
+    transform: translate3d(-12px, -4px, 8px) rotate(-8deg);
+  }
+  .svc-garden.is-armed .svc-bud.is-open .svc-bud__blade--r {
+    transform: translate3d(12px, -4px, -8px) rotate(172deg);
+  }
+  .svc-bud__text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .svc-garden.is-armed .svc-bud__text,
+  .svc-garden.is-armed .svc-bud a {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .svc-garden.is-armed .svc-bud.is-open .svc-bud__text,
+  .svc-garden.is-armed .svc-bud.is-open a {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* =================================================================
+     MODO HORIZONTAL (escritorio con JS)
+     La sección se queda fija mientras dura el recorrido: el alto extra
+     de [data-pin] (--scroll-len) es lo que se traduce en movimiento
+     lateral de la rama (--x).
+     ================================================================= */
+  .svc-pin.is-horizontal {
+    position: relative;
+    height: calc(100vh + var(--scroll-len, 0px));
+  }
+  /* El titular funciona como titular: arriba y en el margen izquierdo.
+     La animación se queda con el ancho completo de la pantalla. */
+  .is-horizontal .svc-stage {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    /* Anclado arriba y con sitio reservado para el header sticky: si se
+       centra, el contenido desborda y el recorte se come el titular. */
+    justify-content: flex-start;
+    overflow: hidden;
+    padding-block: clamp(64px, 8vh, 88px) 0;
+    padding-inline: 0;
+  }
+  .is-horizontal .svc-head {
+    width: auto;
+    flex: none;
+    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+    padding-inline: var(--gutter) 0;
+  }
+  .is-horizontal .svc-head p {
+    font-size: 0.875rem;
+  }
+
+  /* Tipografía ajustada para que la ficha entera quepa en pantalla junto
+     al titular: con esto la tarjeta pasa de ~298px de alto a ~250px. */
+  .is-horizontal .svc-card {
+    padding: 1.25rem;
+  }
+  .is-horizontal .svc-card h3 {
+    font-size: 1.0625rem;
+    line-height: 1.35;
+  }
+  .is-horizontal .svc-card p {
+    margin-top: 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .is-horizontal .svc-card ul {
+    margin-top: 1rem;
+  }
+  .is-horizontal .svc-card li {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+  .is-horizontal .svc-card li + li {
+    margin-top: 0.5rem;
+  }
+  .is-horizontal .svc-rail {
+    display: flex;
+    max-width: none;
+    min-width: 0;
+    flex: 1 1 auto;
+    align-items: center;
+    margin: 0;
+    padding-inline: 0;
+    overflow: hidden;
+  }
+  /* El tronco es visible de lado a lado desde el principio. Lo que no
+     cabe en pantalla (últimas ramas y brote) entra desplazando el track
+     con el scroll.
+     Por defecto (pantallas bajas) el tronco va arriba y las tarjetas
+     cuelgan; en pantallas altas se centra y alternan arriba/abajo
+     (más abajo, @media min-height). */
+  .is-horizontal .svc-garden {
+    --line-y: 64px;
+    --branch-gap: 44px;
+    /* Hueco de entrada corto: solo el aire necesario para que la primera
+       tarjeta quepa entera cuando el trazo la alcanza. */
+    --lead: max(12vw, 120px);
+    display: flex;
+    /* Lo que quede de pantalla bajo el header y el titular */
+    height: clamp(340px, calc(100vh - 300px), 560px);
+    width: max-content;
+    align-items: stretch;
+    /* Este hueco es el tramo de tronco desnudo entre la última ficha y el
+       brote con la llamada final: le da aire y alarga la rama. */
+    gap: clamp(5rem, 11vw, 13rem);
+    padding-inline: var(--lead) max(16vw, 3rem);
+    transform: translate3d(calc(var(--x, 0px) * -1), 0, 0);
+    will-change: transform;
+  }
+
+  /* Rama principal, ahora horizontal */
+  /* La rama empieza en la primera tarjeta, no en el borde del track */
+  .is-horizontal .svc-stem {
+    top: var(--line-y);
+    right: var(--stem-right, 9vw);
+    bottom: auto;
+    left: var(--lead);
+    height: 2px;
+    width: auto;
+  }
+  .is-horizontal .svc-stem__track {
+    background: linear-gradient(
+      to right,
+      var(--color-border),
+      color-mix(in srgb, var(--color-border) 25%, transparent)
+    );
+  }
+  .is-horizontal .svc-stem__grow {
+    transform-origin: left center;
+    transform: scaleX(var(--grow, 1));
+    background: linear-gradient(
+      to right,
+      var(--color-accent-soft),
+      var(--color-accent)
+    );
+  }
+  .is-horizontal .svc-stem__sap {
+    top: 50%;
+    left: calc(var(--grow, 1) * 100%);
+  }
+
+  /* Nodos en fila */
+  .is-horizontal .svc-list {
+    flex-direction: row;
+    align-items: stretch;
+    /* Más tramo de tronco visible entre rama y rama */
+    gap: clamp(2.5rem, 4vw, 4rem);
+  }
+  .is-horizontal .svc-node {
+    width: clamp(320px, 25vw, 440px);
+    padding-left: 0;
+  }
+  .is-horizontal .svc-leaf {
+    top: var(--line-y);
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  /* La ramita gira 90° para bajar de la rama a la tarjeta */
+  .is-horizontal .svc-branch {
+    top: calc(var(--line-y) - 20px);
+    left: 50%;
+    width: 64px;
+    height: 40px;
+    transform-origin: 0 50%;
+    transform: rotate(90deg);
+  }
+  .is-horizontal .svc-card {
+    position: absolute;
+    top: calc(var(--line-y) + var(--branch-gap));
+    left: 0;
+    width: 100%;
+    transform-origin: top center;
+  }
+  /* Alternar la altura da la irregularidad de una rama de verdad */
+  .is-horizontal .svc-node--odd .svc-card {
+    top: calc(var(--line-y) + var(--branch-gap) + 28px);
+  }
+
+  /* La tarjeta se despliega hacia abajo, colgando de su ramita */
+  .is-horizontal .svc-garden.is-armed .svc-card {
+    transform: translate3d(0, -18px, -70px) rotateX(-26deg) scale(0.96);
+  }
+  .is-horizontal .svc-garden.is-armed .svc-node.is-open .svc-card {
+    transform: none;
+  }
+
+  /* Brote final al terminar la rama */
+  .is-horizontal .svc-bud {
+    position: relative;
+    width: clamp(280px, 20vw, 340px);
+    margin-top: 0;
+    padding: 0;
+  }
+  .is-horizontal .svc-bud__sprout {
+    top: var(--line-y);
+    left: 0;
+  }
+  .is-horizontal .svc-bud__body {
+    position: absolute;
+    top: calc(var(--line-y) + var(--branch-gap));
+    left: 0;
+    width: 100%;
+  }
+
+  /* Barra de progreso del recorrido */
+  .is-horizontal .svc-progress {
+    display: block;
+    margin-top: 1.75rem;
+    height: 3px;
+    width: min(260px, 45%);
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--color-border);
+  }
+  .svc-progress__bar {
+    display: block;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      var(--color-accent-soft),
+      var(--color-accent)
+    );
+    transform-origin: left center;
+    transform: scaleX(var(--progress, 0));
+  }
+
+  /* ---- Efecto árbol: rama centrada, 01 y 03 arriba, 02 y 04 abajo ----
+     Necesita altura: dos tarjetas (~300px) más su separación de la rama
+     no caben en pantallas bajas, que se quedan con la rama arriba. */
+  @media (min-height: 880px) {
+    .is-horizontal .svc-garden {
+      --line-y: 50%;
+      --branch-gap: 36px;
+      /* Descontando el header sticky y el titular */
+      height: min(calc(100vh - 300px), 860px);
+    }
+    /* Impares (01, 03): crecen hacia arriba */
+    .is-horizontal .svc-node--even .svc-card {
+      top: auto;
+      bottom: calc(var(--line-y) + var(--branch-gap));
+      transform-origin: bottom center;
+    }
+    .is-horizontal .svc-node--even .svc-branch {
+      transform: rotate(-90deg);
+    }
+    .is-horizontal .svc-garden.is-armed .svc-node--even .svc-card {
+      transform: translate3d(0, 18px, -70px) rotateX(26deg) scale(0.96);
+    }
+    .is-horizontal .svc-garden.is-armed .svc-node--even.is-open .svc-card {
+      transform: none;
+    }
+    /* Pares (02, 04): cuelgan hacia abajo, sin el escalón extra */
+    .is-horizontal .svc-node--odd .svc-card {
+      top: calc(var(--line-y) + var(--branch-gap));
+    }
+  }
+
+  /* ---- Accesibilidad: sin movimiento ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .svc-leaf__float {
+      animation: none;
+    }
+    .svc-card,
+    .svc-card__row,
+    .svc-check path,
+    .svc-leaf__disc,
+    .svc-branch,
+    .svc-bud__blade {
+      transition: none;
+    }
+    .svc-card::after {
+      animation: none;
+    }
+    .svc-stem__grow {
+      transform: none;
+    }
+    .svc-stem__sap {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Recorrido de la rama. El JS solo escribe el progreso (--grow), el
+  // desplazamiento lateral (--x) y la clase .is-open de cada nodo.
+  // En escritorio el modo es horizontal: el alto extra del contenedor
+  // [data-pin] es el recorrido, y la sección queda fija (sticky).
+  function initGarden(garden: HTMLElement) {
+    const pin = garden.closest<HTMLElement>("[data-pin]");
+    const rail = garden.parentElement;
+    if (!pin || !rail) return;
+
+    const nodes = Array.from(
+      garden.querySelectorAll<HTMLElement>("[data-node]"),
+    );
+    const bud = garden.querySelector<HTMLElement>("[data-bud]");
+    const sprout = garden.querySelector<HTMLElement>(".svc-bud__sprout");
+    const tip = garden.querySelector<HTMLElement>("[data-tip]");
+    const stem = garden.querySelector<HTMLElement>(".svc-stem");
+
+    const clamp = (v: number) => Math.min(Math.max(v, 0), 1);
+
+    const openAll = () => {
+      pin.style.setProperty("--grow", "1");
+      nodes.forEach((n) => n.classList.add("is-open"));
+      bud?.classList.add("is-open");
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      openAll();
+      return;
+    }
+
+    // Balanceo desfasado entre hojas para que no vayan a la vez.
+    nodes.forEach((n, i) => {
+      n.querySelector<HTMLElement>(".svc-leaf__float")?.style.setProperty(
+        "--sway-delay",
+        `${i * 600}ms`,
+      );
+    });
+
+    garden.classList.add("is-armed");
+
+    // Las tarjetas van a tamaño completo y lo que no cabe entra con el
+    // scroll, así que basta con que quepan un par: por debajo de esto se
+    // lee mejor la planta vertical.
+    const wide = window.matchMedia("(min-width: 1024px)");
+    // Scroll mínimo del tramo fijo, en pantallas: si el árbol desborda
+    // poco, el dibujado necesita igualmente su tiempo.
+    const MIN_REVEAL = 0.6;
+    // Cuánto se adelanta la apertura de cada ficha respecto al trazo, en
+    // píxeles de recorrido (además de medio nodo en horizontal).
+    const LOOKAHEAD = 40;
+    let horizontal = false;
+    let travel = 0; // lo que desborda el árbol, en píxeles
+
+    // La rama tiene que morir justo en el centro del brote final.
+    function measureStem() {
+      if (!sprout) return;
+      const g = garden.getBoundingClientRect();
+      const s = sprout.getBoundingClientRect();
+      if (horizontal) {
+        const end = Math.max(g.right - (s.left + s.width / 2), 0);
+        pin.style.setProperty("--stem-right", `${end.toFixed(1)}px`);
+      } else {
+        const end = Math.max(g.bottom - (s.top + s.height / 2), 0);
+        pin.style.setProperty("--stem-bottom", `${end.toFixed(1)}px`);
+      }
+    }
+
+    // Decide el modo y mide el recorrido disponible.
+    function layout() {
+      horizontal = wide.matches;
+      pin.classList.toggle("is-horizontal", horizontal);
+      if (horizontal) {
+        // El árbol se ve desde el principio; el recorrido lateral es solo
+        // lo que desborda, para traer las ramas que no caben y el brote.
+        pin.style.setProperty("--x", "0px");
+        travel = Math.max(garden.offsetWidth - rail.clientWidth, 0);
+        pin.style.setProperty(
+          "--scroll-len",
+          `${Math.round(Math.max(travel, window.innerHeight * MIN_REVEAL))}px`,
+        );
+      } else {
+        travel = 0;
+        pin.style.removeProperty("--scroll-len");
+        pin.style.removeProperty("--x");
+        pin.style.removeProperty("--stem-right");
+      }
+      measureStem();
+      update();
+    }
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const rect = pin.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight * 1.5) return;
+
+      let grow: number;
+      if (horizontal) {
+        // Progreso dentro del tramo fijo: 0 al llegar arriba, 1 al salir.
+        const span = pin.offsetHeight - window.innerHeight;
+        const progress = span > 0 ? clamp(-rect.top / span) : 1;
+        pin.style.setProperty("--progress", progress.toFixed(4));
+        // El track se desplaza lo justo para traer lo que no cabía...
+        pin.style.setProperty("--x", `${(progress * travel).toFixed(1)}px`);
+        // ...y a la vez el tronco se va trazando de izquierda a derecha:
+        // cada rama se abre cuando el trazo la alcanza. Acaba un poco
+        // antes del final para que al brote y su CTA les quede su momento.
+        grow = clamp(progress / 0.9);
+      } else {
+        // La rama crece hasta la línea situada al 72% de la ventana.
+        const g = garden.getBoundingClientRect();
+        grow = clamp((window.innerHeight * 0.72 - g.top) / g.height);
+        pin.style.setProperty("--progress", grow.toFixed(4));
+      }
+      pin.style.setProperty("--grow", grow.toFixed(4));
+      pin.style.setProperty("--sap-o", grow > 0.01 && grow < 0.99 ? "1" : "0");
+
+      // Un nodo se abre cuando la punta de la rama pasa por su hoja.
+      // Adelanto: la ficha arranca su despliegue antes de que el trazo
+      // llegue del todo a su hoja, así la animación se ve venir en vez de
+      // dispararse justo encima. En horizontal se adelanta medio nodo.
+      const t = tip?.getBoundingClientRect();
+      if (t) {
+        nodes.forEach((node) => {
+          if (node.classList.contains("is-open")) return;
+          const leaf = node.querySelector(".svc-leaf");
+          if (!leaf) return;
+          const lr = leaf.getBoundingClientRect();
+          const lead = horizontal ? node.offsetWidth / 2 + LOOKAHEAD : 70;
+          const reached = horizontal
+            ? t.right + lead >= lr.left + lr.width / 2
+            : t.bottom + lead >= lr.top + lr.height / 2;
+          if (reached) node.classList.add("is-open");
+        });
+      }
+      // El brote final se abre igual que un nodo: cuando la punta llega.
+      if (bud && !bud.classList.contains("is-open")) {
+        const s = sprout?.getBoundingClientRect();
+        const reached =
+          horizontal && t && s
+            ? t.right + LOOKAHEAD * 4 >= s.left + s.width / 2
+            : grow > 0.94;
+        if (reached) bud.classList.add("is-open");
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", layout);
+    wide.addEventListener("change", layout);
+    layout();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-garden]").forEach(initGarden);
+</script>

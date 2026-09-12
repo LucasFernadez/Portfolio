@@ -7,7 +7,7 @@ const hostname = (link?: string) =>
 ---
 
 <section id="proyectos" class="border-t border-border/60">
-  <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
+  <div class="shell shell--full py-20 sm:py-24">
     <div class="mb-14 sm:mb-20" data-reveal>
       <div class="flex items-end justify-between gap-4">
         <div>
@@ -31,7 +31,12 @@ const hostname = (link?: string) =>
             const domain = hostname(p.link);
             const flip = i % 2 === 1;
             return (
-              <article class="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+              <article
+                class:list={[
+                  "proj-row grid items-center gap-8 lg:grid-cols-12 lg:gap-12",
+                  flip && "proj-row--right",
+                ]}
+              >
                 {/* Captura dentro de un navegador simulado */}
                 <div
                   data-reveal
@@ -75,10 +80,13 @@ const hostname = (link?: string) =>
 
                 {/* Ficha del proyecto */}
                 <div
-                  data-reveal
-                  class:list={["lg:col-span-5", flip && "lg:order-1"]}
+                  data-reveal-group
+                  class:list={[
+                    "proj-text lg:col-span-5",
+                    flip && "lg:order-1",
+                  ]}
                 >
-                  <div class="flex items-center gap-3">
+                  <div class="flex items-center gap-3" data-reveal>
                     <span class="font-mono text-sm font-medium text-accent">
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -88,17 +96,20 @@ const hostname = (link?: string) =>
                     </span>
                   </div>
 
-                  <h3 class="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+                  <h3
+                    class="mt-4 text-2xl font-bold tracking-tight sm:text-3xl"
+                    data-reveal
+                  >
                     {p.title}
                   </h3>
-                  <p class="mt-4 leading-relaxed text-secondary">
+                  <p class="mt-4 leading-relaxed text-secondary" data-reveal>
                     {p.description}
                   </p>
 
                   {p.highlights && p.highlights.length > 0 && (
                     <ul class="mt-6 space-y-2.5">
                       {p.highlights.map((h) => (
-                        <li class="flex items-start gap-3 text-sm text-fg">
+                        <li class="flex items-start gap-3 text-sm text-fg" data-reveal>
                           <svg
                             viewBox="0 0 24 24"
                             class="mt-0.5 h-4 w-4 flex-none text-accent"
@@ -117,7 +128,7 @@ const hostname = (link?: string) =>
                     </ul>
                   )}
 
-                  <div class="mt-6 flex flex-wrap gap-2">
+                  <div class="mt-6 flex flex-wrap gap-2" data-reveal>
                     {p.tags.map((t) => (
                       <span class="rounded border border-border bg-surface-2 px-2 py-1 font-mono text-xs text-muted">
                         {t}
@@ -130,6 +141,7 @@ const hostname = (link?: string) =>
                       href={p.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-reveal
                       class="mt-8 inline-flex items-center gap-2 rounded-md border border-border bg-surface-2 px-5 py-2.5 text-sm font-medium text-fg transition-all hover:-translate-y-0.5 hover:border-accent/60 hover:text-accent"
                     >
                       Visitar web
@@ -143,7 +155,7 @@ const hostname = (link?: string) =>
           })}
         </div>
       ) : (
-        <div class="rounded-xl border border-dashed border-border bg-surface/50 px-6 py-16 text-center">
+        <div class="indent rounded-xl border border-dashed border-border bg-surface/50 px-6 py-16 text-center">
           <p class="text-lg font-medium">Proyectos en camino</p>
           <p class="mx-auto mt-2 max-w-md text-sm text-secondary">
             Estoy preparando una selección de mis mejores trabajos. Mientras
@@ -160,3 +172,39 @@ const hostname = (link?: string) =>
     }
   </div>
 </section>
+
+<style>
+  /* Cascada: cada proyecto se pega a un margen y alterna lado, dejando el
+     aire sobrante al otro lado. El primero a la izquierda (alineado con el
+     titular), el segundo a la derecha, y así. */
+  @media (min-width: 1024px) {
+    .proj-row {
+      width: min(100%, 1400px);
+      margin-right: auto;
+    }
+    .proj-row--right {
+      margin-right: 0;
+      margin-left: auto;
+    }
+
+    /* El texto se estira hacia el margen que la cascada deja libre: se
+       mueve solo él, la captura se queda donde está. El tirón se corta a
+       cero cuando no sobra pantalla, para no provocar scroll lateral. */
+    .proj-text {
+      --pull: clamp(0px, calc((100vw - 1500px) / 2), 150px);
+      max-width: none;
+      margin-inline: 0 calc(var(--pull) * -1);
+      padding-left: clamp(1.5rem, 2vw, 3rem);
+    }
+    .proj-row--right .proj-text {
+      margin-inline: calc(var(--pull) * -1) 0;
+      padding-left: 0;
+      padding-right: clamp(1.5rem, 2vw, 3rem);
+    }
+  }
+
+  /* Con el ancho holgado ya no hacen falta guiones para justificar */
+  .proj-text p {
+    text-align: justify;
+  }
+</style>

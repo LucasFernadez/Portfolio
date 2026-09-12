@@ -30,12 +30,15 @@ export const site = {
   },
 };
 
-// Servicios que ofreces. Se muestran como tarjetas y alimentan el SEO.
+// Servicios que ofreces. Se muestran en la "rama" de la sección Servicios
+// y alimentan el SEO.
 // 'icon' referencia una silueta SVG definida en Services.astro (serviceIcons).
 export type Service = {
   title: string;
   description: string;
   icon: "code" | "app" | "seo" | "maintenance";
+  // Qué incluye el servicio: 3 puntos concretos (se muestran en la tarjeta).
+  includes: string[];
 };
 
 export const services: Service[] = [
@@ -44,24 +47,44 @@ export const services: Service[] = [
     title: "Desarrollo web a medida",
     description:
       "Sitios y plataformas full-stack rápidos, escalables y mantenibles, construidos con tecnologías modernas y código limpio.",
+    includes: [
+      "Diseño y desarrollo propios, sin plantillas",
+      "Optimizada para velocidad y Core Web Vitals",
+      "Responsive y accesible en cualquier dispositivo",
+    ],
   },
   {
     icon: "app",
     title: "Aplicaciones personalizadas",
     description:
       "Apps a medida adaptadas a tu negocio: desde herramientas internas hasta productos completos, diseñadas en torno a tus necesidades.",
+    includes: [
+      "Herramientas internas y paneles de gestión",
+      "Apps instalables (PWA) que funcionan sin conexión",
+      "Integración con tus sistemas y APIs",
+    ],
   },
   {
     icon: "seo",
     title: "Posicionamiento SEO",
     description:
       "Optimización técnica y de contenido para que tu web posicione en Google: rendimiento, datos estructurados, sitemap y buenas prácticas.",
+    includes: [
+      "Auditoría técnica y corrección de errores",
+      "Datos estructurados, sitemap y metadatos",
+      "Contenido y rendimiento orientados a posicionar",
+    ],
   },
   {
     icon: "maintenance",
     title: "Mantenimiento web",
     description:
       "Soporte continuo, mejoras de rendimiento, actualizaciones y nuevas funcionalidades para mantener tu producto al día.",
+    includes: [
+      "Actualizaciones y copias de seguridad",
+      "Monitorización de seguridad y rendimiento",
+      "Cambios y nuevas funcionalidades a demanda",
+    ],
   },
 ];
 

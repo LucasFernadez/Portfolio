@@ -36,7 +36,7 @@
     tilt: {
       enabled: true,
       // Tarjetas reales de Servicios y Proyectos.
-      selector: "#servicios article, #proyectos [data-tilt]",
+      selector: "#servicios [data-tilt], #proyectos [data-tilt]",
       maxDeg: 5, // inclinación máxima en grados
       scale: 1.015, // escala en hover
     },

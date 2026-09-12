@@ -23,8 +23,38 @@
   --font-mono: "Geist Mono", ui-monospace, "Courier New", monospace;
 }
 
+/* Contenedor común de todas las secciones: ancla el contenido al margen
+   izquierdo de la página (con su gutter) en lugar de centrarlo. Así los
+   títulos arrancan siempre en el mismo sitio y queda sitio libre a la
+   derecha para las composiciones. */
+.shell {
+  width: 100%;
+  max-width: 1720px;
+  margin-inline: 0;
+  padding-inline: var(--gutter);
+}
+
+/* Variante sin tope de ancho: necesaria cuando algo de dentro va centrado
+   (Hablemos). Con el tope, un mx-auto centraría respecto a la caja de la
+   sección —anclada a la izquierda— y no respecto a la pantalla. */
+.shell--full {
+  max-width: none;
+}
+
+/* El contenido de cada sección se descuelga hacia la derecha para que el
+   titular quede solo en el margen izquierdo, sin alinearse con él. */
+.indent {
+  margin-left: 0;
+}
+@media (min-width: 1024px) {
+  .indent {
+    margin-left: clamp(0px, 14vw, 300px);
+  }
+}
+
 /* Ajustes decorativos que cambian con el tema (no son tokens Tailwind). */
 :root {
+  --gutter: clamp(1.25rem, 4vw, 4rem); /* margen izquierdo de la página */
   --grid-line: rgba(75, 93, 63, 0.07); /* líneas del grid de fondo */
   --hero-glow: rgba(22, 163, 74, 0.08); /* resplandor superior */
   --spotlight-strength: 12%; /* intensidad del spotlight en tarjetas */
@@ -47,8 +77,27 @@
   --spotlight-strength: 18%;
 }
 
-html {
+/* El scroll suave lo lleva Lenis (ver Layout.astro). Mientras Lenis no
+   esté activo —sin JS o con prefers-reduced-motion— se usa el nativo;
+   con Lenis activo (clase .lenis en <html>) hay que desactivarlo o los
+   dos sistemas pelean por la posición. */
+html:not(.lenis) {
   scroll-behavior: smooth;
+}
+
+/* CSS base de Lenis (equivalente a lenis/dist/lenis.css). */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {

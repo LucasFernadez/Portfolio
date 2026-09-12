@@ -95,6 +95,53 @@ const jsonLd = {
     <slot />
 
     <script>
+      import Lenis from "lenis";
+
+      // Scroll suave con inercia (Lenis). Sigue siendo scroll nativo por
+      // debajo: los listeners de 'scroll' del resto del sitio funcionan.
+      // Con prefers-reduced-motion no se activa y el navegador scrollea
+      // como siempre.
+      function setupSmoothScroll() {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return;
+        }
+
+        const lenis = new Lenis({
+          duration: 1.1,
+          // easing exponencial: arranca rápido y frena largo
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+        });
+
+        function raf(time: number) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Los enlaces ancla (#proyectos, #contacto…) los mueve Lenis, con
+        // un margen para que el header sticky no tape el título.
+        const HEADER = 76;
+        document
+          .querySelectorAll<HTMLAnchorElement>('a[href^="#"]')
+          .forEach((link) => {
+            link.addEventListener("click", (event) => {
+              const href = link.getAttribute("href");
+              if (!href) return;
+              if (href === "#") {
+                event.preventDefault();
+                lenis.scrollTo(0);
+                return;
+              }
+              const target = document.querySelector(href);
+              if (!target) return;
+              event.preventDefault();
+              lenis.scrollTo(target as HTMLElement, { offset: -HEADER });
+              history.replaceState(null, "", href);
+            });
+          });
+      }
+
       // Reveal al hacer scroll: revela [data-reveal] al entrar en viewport.
       // Aplica un retardo escalonado a los hijos directos de [data-reveal-group].
       function setupReveal() {
@@ -143,6 +190,7 @@ const jsonLd = {
           });
       }
 
+      setupSmoothScroll();
       setupReveal();
       setupSpotlight();
     </script>
