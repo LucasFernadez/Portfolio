@@ -4,5 +4,9 @@
 name = "portfolio"
 compatibility_date = "2026-06-16"
 
+# Dominio propio: al desplegar, Cloudflare engancha leafcode.org a este
+# Worker. Requiere que la zona esté en la misma cuenta de Cloudflare.
+routes = [{ pattern = "leafcode.org", custom_domain = true }]
+
 [assets]
 directory = "./dist"
