@@ -19,13 +19,15 @@
     // 1) Hojas cayendo por TODA la página (canvas fijo al viewport)
     leaves: {
       enabled: true,
-      count: 22, // nº de hojas (con toda la página cabe alguna más)
+      // Efecto de fondo: tiene que notarse apenas, sin competir con el
+      // contenido. Pocas hojas, pequeñas, muy transparentes y lentas.
+      count: 10, // nº de hojas
       // Verdes EXACTOS de la paleta (global.css @theme):
       //   #16a34a accent/Primary · #15803d accent-soft · #4b5d3f oliva
       colors: ["#16a34a", "#4b5d3f", "#8ba888"],
-      opacity: 0.28, // opacidad de cada hoja
-      size: 0.55, // escala base de la silueta
-      speed: 0.45, // multiplicador de velocidad de caída
+      opacity: 0.12, // opacidad de cada hoja
+      size: 0.36, // escala base de la silueta
+      speed: 0.3, // multiplicador de velocidad de caída
       // z-index del canvas fijo. -1 = detrás del contenido (secciones,
       // header, footer) y delante del fondo global (body::before/after,
       // también en -1, se pintan antes por orden del DOM). Así las hojas
